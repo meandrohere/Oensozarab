@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق صناع الأنمي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(-45deg, #000, #222, #444, #222, #000);
+            background-size: 400% 400%;
+            animation: backgroundAnimation 8s ease-in-out infinite;
+            text-align: center;
+        }
+
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 90%;
+            max-width: 380px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #bbb;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(145deg, #444, #222);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: linear-gradient(145deg, #222, #444);
+            transform: scale(1.05);
+        }
+
+        a {
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .logo img {
+            width: 80px;
+            border-radius: 50%;
+            border: 2px solid #888;
+            box-shadow: 0 3px 10px rgba(200, 200, 200, 0.3);
+            animation: roll 2s ease-out forwards;
+        }
+
+        @keyframes roll {
+            0% { transform: translateX(-300px) rotate(-360deg); }
+            100% { transform: translateX(0) rotate(0); }
+        }
+
+        .counter {
+            color: #fff;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            button {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            input {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="loginForm">
+        <h2>تسجيل الدخول</h2>
+        <input type="text" id="loginUsername" placeholder="اسم المستخدم" required>
+        <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
+        <button onclick="login()">دخول</button>
+        <a href="#" onclick="toggleForm('registerForm')">ليس لديك حساب؟ إنشاء حساب</a>
+    </div>
+
+    <div id="registerForm" class="hidden">
+        <h2>إنشاء حساب</h2>
+        <input type="text" id="registerUsername" placeholder="اسم المستخدم" required>
+        <input type="password" id="registerPassword" placeholder="كلمة المرور" required>
+        <button onclick="register()">تسجيل</button>
+        <a href="#" onclick="toggleForm('loginForm')">لديك حساب بالفعل؟ تسجيل الدخول</a>
+    </div>
+
+    <div id="mainScreen" class="hidden">
+        <div class="logo">
+            <img src="logo.png" alt="شعار التطبيق">
+        </div>
+        <h2>مرحبًا بك في صناع الأنمي</h2>
+        <button onclick="redirectToHome()">قائمة رئيسية</button>
+        <div class="counter">
+            عدد الزيارات: <span id="visitCounter">0</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleForm(formId) {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById(formId).classList.remove('hidden');
+    }
+
+    function register() {
+        let username = document.getElementById('registerUsername').value.trim();
+        let password = document.getElementById('registerPassword').value.trim();
+
+        if (!username || !password) {
+            alert("يرجى ملء جميع الحقول!");
+            return;
+        }
+
+        if (localStorage.getItem(username)) {
+            alert("اسم المستخدم مسجل بالفعل!");
+            return;
+        }
+
+        localStorage.setItem(username, password);
+        alert("تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن.");
+        toggleForm('loginForm');
+    }
+
+    function login() {
+        let username = document.getElementById('loginUsername').value.trim();
+        let password = document.getElementById('loginPassword').value.trim();
+
+        if (!username || !password) {
+            alert("يرجى ملء جميع الحقول!");
+            return;
+        }
+
+        let storedPassword = localStorage.getItem(username);
+
+        if (storedPassword === password) {
+            alert("تم تسجيل الدخول بنجاح!");
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('mainScreen').classList.remove('hidden');
+            updateVisitCounter();
+            localStorage.setItem('loggedInUser', username); // حفظ اسم المستخدم المسجل دخوله
+        } else {
+            alert("اسم المستخدم أو كلمة المرور غير صحيحة!");
+        }
+    }
+
+    function updateVisitCounter() {
+        let counterElement = document.getElementById('visitCounter');
+        let visitCount = localStorage.getItem('globalVisitCount') || 0;
+        visitCount++;
+        localStorage.setItem('globalVisitCount', visitCount);
+        counterElement.textContent = visitCount;
+    }
+
+    function redirectToHome() {
+        window.location.href = 'home.html';
+    }
+</script>
+
+</body>
+</html>
