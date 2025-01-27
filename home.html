@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الصفحة الرئيسية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid #FFD700;
+        }
+
+        .logo {
+            width: 120px;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        }
+
+        .welcome-message {
+            font-size: 1.5em;
+            margin-top: 15px;
+            color: #FFD700;
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 30px 0;
+        }
+
+        .anime-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .anime-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .episodes-container {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 30px 0;
+        }
+
+        .episode-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .episode-card:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        .comment-btn {
+            background: #FFD700;
+            color: #1a1a2e;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .comment-btn:hover {
+            background: #e5c100;
+        }
+
+        .player-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+        }
+
+        .video-player {
+            width: 80%;
+            height: 80%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .comments-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 1001;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .comment-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: #FFD700;
+        }
+
+        .comment-input-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .submit-btn {
+            background: #FFD700;
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #e5c100;
+        }
+
+        .back-btn {
+            background: #FFD700;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        .close-comment-btn {
+            background: #FFD700;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .anime-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .episodes-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .video-player {
+                width: 100%;
+                height: 50%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .anime-grid, .episodes-container {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-message {
+                font-size: 1.2rem;
+            }
+
+            .comment-input-box {
+                flex-direction: column;
+            }
+
+            .submit-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="logo.png" alt="شعار الموقع" class="logo">
+            <div class="welcome-message">مرحبًا بك يا <span id="username"></span>!</div>
+        </div>
+
+        <!-- الشاشة الرئيسية -->
+        <div class="anime-grid" id="mainScreen">
+            <div class="anime-card" onclick="showEpisodes('حريق')">حريق</div>
+        </div>
+
+        <!-- شاشة الحلقات -->
+        <div class="episodes-container" id="episodesScreen">
+            <button class="back-btn" onclick="showMainScreen()">← العودة</button>
+            <div id="episodesList"></div>
+        </div>
+    </div>
+
+    <!-- مشغل الفيديو -->
+    <div class="player-screen" id="playerScreen">
+        <div class="close-btn" onclick="closePlayer()">×</div>
+        <iframe class="video-player" id="videoPlayer" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen></iframe>
+    </div>
+
+    <!-- نافذة التعليقات -->
+    <div class="comments-container" id="commentsContainer">
+        <h2 style="margin-bottom: 20px;">التعليقات</h2>
+        <div id="commentsList"></div>
+        <div class="comment-input-box">
+            <input type="text" class="comment-input" id="commentInput" placeholder="اكتب تعليقك هنا...">
+            <button class="submit-btn" onclick="submitComment()">إرسال</button>
+        </div>
+        <button class="close-comment-btn" onclick="closeComments()">إغلاق التعليقات</button>
+    </div>
+
+    <script>
+        // عرض اسم المستخدم بعد "مرحبًا بك يا ..."
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        if (loggedInUser) {
+            document.getElementById('username').textContent = loggedInUser;
+        } else {
+            window.location.href = 'index.html'; // إذا لم يكن هناك مستخدم مسجل، يتم إعادة التوجيه إلى صفحة تسجيل الدخول
+        }
+
+        // بيانات الحلقات
+        const animeEpisodes = {
+            'حريق': ['الحلقة 1', 'الحلقة 2', 'الحلقة 3']
+        };
+
+        // روابط الحلقات
+        const animeLinks = {
+            'حريق': [
+                'https://www.youtube.com/embed/t2OpLlzixkk',
+                'https://www.youtube.com/embed/Y93yiNqartI',
+                'https://www.youtube.com/embed/qHydhCUVEBw'
+            ]
+        };
+
+        // إدارة التعليقات
+        let comments = JSON.parse(localStorage.getItem('comments')) || {};
+        let lastCommentTime = JSON.parse(localStorage.getItem('lastCommentTime')) || {};
+
+        // عرض الحلقات
+        function showEpisodes(anime) {
+            currentAnime = anime;
+            document.getElementById('mainScreen').style.display = 'none';
+            document.getElementById('episodesScreen').style.display = 'grid';
+            
+            const episodesList = document.getElementById('episodesList');
+            episodesList.innerHTML = '';
+            
+            animeEpisodes[anime].forEach((episode, index) => {
+                const episodeCard = document.createElement('div');
+                episodeCard.className = 'episode-card';
+                episodeCard.innerHTML = `
+                    <span>${episode}</span>
+                    <button class="comment-btn" 
+                            onclick="showComments('${anime}', ${index})">
+                        💬 التعليقات
+                    </button>
+                `;
+                episodeCard.onclick = () => playEpisode(anime, index);
+                episodesList.appendChild(episodeCard);
+            });
+        }
+
+        // تشغيل الحلقة
+        function playEpisode(anime, episodeIndex) {
+            currentEpisode = episodeIndex;
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.src = animeLinks[anime][episodeIndex];
+            document.getElementById('playerScreen').style.display = 'block';
+        }
+
+        // إغلاق مشغل الفيديو
+        function closePlayer() {
+            document.getElementById('playerScreen').style.display = 'none';
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.src = '';
+        }
+
+        // عرض التعليقات
+        function showComments(anime, episodeIndex) {
+            const commentsContainer = document.getElementById('commentsContainer');
+            const commentsList = document.getElementById('commentsList');
+            commentsList.innerHTML = '';
+
+            const key = `${anime}-${episodeIndex}`;
+            if (comments[key]) {
+                comments[key].forEach(comment => {
+                    const commentItem = document.createElement('div');
+                    commentItem.className = 'comment-item';
+                    commentItem.innerHTML = `
+                        <div class="comment-header">
+                            <span>${comment.user}</span>
+                            <span>${comment.time}</span>
+                        </div>
+                        <p>${comment.text}</p>
+                    `;
+                    commentsList.appendChild(commentItem);
+                });
+            }
+
+            commentsContainer.style.display = 'block';
+        }
+
+        // إرسال تعليق
+        function submitComment() {
+            const commentInput = document.getElementById('commentInput');
+            const commentText = commentInput.value.trim();
+            if (!commentText) return;
+
+            const key = `${currentAnime}-${currentEpisode}`;
+            if (!comments[key]) comments[key] = [];
+
+            const now = new Date();
+            const comment = {
+                user: loggedInUser,
+                text: commentText,
+                time: now.toLocaleString()
+            };
+
+            comments[key].push(comment);
+            localStorage.setItem('comments', JSON.stringify(comments));
+
+            commentInput.value = '';
+            showComments(currentAnime, currentEpisode);
+        }
+
+        // إغلاق نافذة التعليقات
+        function closeComments() {
+            document.getElementById('commentsContainer').style.display = 'none';
+        }
+
+        // العودة إلى الشاشة الرئيسية
+        function showMainScreen() {
+            document.getElementById('episodesScreen').style.display = 'none';
+            document.getElementById('mainScreen').style.display = 'grid';
+        }
+    </script>
+</body>
+</html>
